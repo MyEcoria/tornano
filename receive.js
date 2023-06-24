@@ -40,4 +40,4 @@ async function receive() {
 receive();
 
 // Exécuter la fonction receive() toutes les 5 minutes
-setInterval(receive, 5 * 60 * 1000);
+setInterval(receive, 10 * 1000);
