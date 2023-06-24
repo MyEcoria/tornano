@@ -1,0 +1,24 @@
+{
+  "name": "tornano",
+  "version": "1.0.0",
+  "description": "Anonymise your nano",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MyEcoria/tornano.git"
+  },
+  "keywords": [
+    "tornado",
+    "tornano",
+    "anonyme"
+  ],
+  "author": "MyEcoria",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MyEcoria/tornano/issues"
+  },
+  "homepage": "https://github.com/MyEcoria/tornano#readme"
+}
