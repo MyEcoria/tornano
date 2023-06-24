@@ -55,13 +55,13 @@ It is important to note that this program does not guarantee absolute anonymity 
   - `send.js`
 ```
 
+## Installation
 ```bash
 npm install
 node index.js
 ```
 
 ## Docker
-
 ```bash
 sudo docker build -t tornano:latest .
 sudo docker run -d -p 3000:3000 tornano:latest 
@@ -73,7 +73,7 @@ Nano: `nano_3ktmq6dpwcc694hrnjzfdykbqeuj4w5w8nut3uqm5pgwa4m9jmstoc4ntu6p`
 
 ## Contact
 
-Discord: @myecoria
-Instagram: @myecoria
-Twitter: @myecoria
-Mail: contact@myecoria.com
+Discord: @myecoria <br>
+Instagram: @myecoria <br>
+Twitter: @myecoria <br>
+Mail: contact@myecoria.com <br>
