@@ -3,9 +3,9 @@ const {
   getCurrentCycle,
   getAllTransaction,
   addCycle
-} = require('./modules/db.js');
+} = require('../modules/db.js');
 
-const { send } = require('./modules/send');
+const { send } = require('../modules/send.js');
 
 // Exécuter le code tous les jours à 13h06
 cron.schedule('9 13 * * *', async () => {

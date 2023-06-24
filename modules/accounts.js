@@ -49,7 +49,7 @@ async function analyse(seed, timeout) {
     ws.on('open', () => {
       console.log('WebSocket connection established');
       timeoutId = setTimeout(handleTimeout, timeout);
-
+      console.log(accounts[0]);
       // Envoyer la demande de suivi pour le compte spécifié
       const subscribeMsg = JSON.stringify({
         action: 'subscribe',
@@ -63,7 +63,7 @@ async function analyse(seed, timeout) {
 
     ws.on('message', async (data) => {
       const message = JSON.parse(data);
-
+      console.log(message);
       if (message.topic === 'confirmation' && message.message.block.subtype === "send") {
         clearTimeout(timeoutId);
         const account = message.message.account;

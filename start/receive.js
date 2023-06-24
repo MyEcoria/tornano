@@ -2,8 +2,8 @@ const { Wallet } = require('simple-nano-wallet-js');
 const { wallet: walletLib } = require('multi-nano-web');
 
 // config file
-const general = require('./config/general.json');
-const nanswap = require('./config/nanswap.json');
+const general = require('../config/general.json');
+const nanswap = require('../config/nanswap.json');
 let key = nanswap['apiKey']; // Ta clé API Nanswap Nodes, https://nanswap.com/nodes
 
 let ticker = "XNO";
@@ -40,4 +40,4 @@ async function receive() {
 receive();
 
 // Exécuter la fonction receive() toutes les 5 minutes
-setInterval(receive, 10 * 1000);
+setInterval(receive, 5 * 60 * 1000);
