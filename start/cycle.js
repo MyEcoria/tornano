@@ -7,7 +7,7 @@ const {
 
 const { send } = require('../modules/send.js');
 
-// Exécuter le code tous les jours à 13h06
+// Exécuter le code tous les jours à 13h09
 cron.schedule('9 13 * * *', async () => {
   try {
     const currentCycle = await getCurrentCycle();
