@@ -4,12 +4,16 @@ const bodyParser = require('body-parser');
 const { analyse } = require('../modules/accounts');
 const { wallet: walletLib } = require('multi-nano-web');
 const { saveTransaction, getCurrentCycle, createAccount, changeAccountStatus, getAccountStatus, saveSeed } = require('../modules/db');
+const cors = require('cors');
 
 // Configs
 const serverConf = require('../config/server.json');
 const port = serverConf['httPort'];
 
+// Définir le middleware pour servir les fichiers statiques
+app.use(express.static('web'));
 app.use(bodyParser.json());
+app.use(cors());
 
 function isNanoAddress(address) {
     // Expression régulière pour valider le format de l'adresse Nano
@@ -84,7 +88,12 @@ app.get('/users/:userId', async (req, res) => {
     }
 });
   
+// Laisser cette route à la fin pour servir le fichier index.html par défaut
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: __dirname + '/web' });
+});
 
-app.listen(port, () => {
+
+app.listen(port, '0.0.0.0', () => {
   console.log(`Serveur démarré sur le port ${port}`);
 });

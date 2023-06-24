@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tornado App</title>
+  <style>
+    *, *:before, *:after {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background: linear-gradient(to right, #ea1d6f 0%, #eb466b 100%);
+      font-size: 12px;
+    }
+
+    body, button, input {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+    }
+
+    .background {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 0 1 700px;
+      margin: auto;
+      padding: 10px;
+    }
+
+    .screen {
+      position: relative;
+      background: #3e3e3e;
+      border-radius: 15px;
+    }
+
+    .screen:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 20px;
+      right: 20px;
+      bottom: 0;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, .4);
+      z-index: -1;
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: #4d4d4f;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .screen-header-left {
+      margin-right: auto;
+    }
+
+    .screen-header-button {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 3px;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .screen-header-button.close {
+      background: #ed1c6f;
+    }
+
+    .screen-header-button.maximize {
+      background: #e8e925;
+    }
+
+    .screen-header-button.minimize {
+      background: #74c54f;
+    }
+
+    .screen-header-right {
+      display: flex;
+    }
+
+    .screen-header-ellipsis {
+      width: 3px;
+      height: 3px;
+      margin-left: 2px;
+      border-radius: 8px;
+      background: #999;
+    }
+
+    .screen-body {
+      display: flex;
+    }
+
+    .screen-body-item {
+      flex: 1;
+      padding: 50px;
+    }
+
+    .screen-body-item.left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-title {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      color: #ea1d6f;
+      font-size: 26px;
+    }
+
+    .app-title:after {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      width: 25px;
+      height: 4px;
+      background: #ea1d6f;
+    }
+
+    .app-contact {
+      margin-top: auto;
+      font-size: 8px;
+      color: #888;
+    }
+
+    .app-form-group {
+      margin-bottom: 15px;
+    }
+
+    .app-form-group.message {
+      margin-top: 40px;
+    }
+
+    .app-form-group.buttons {
+      margin-bottom: 0;
+      text-align: right;
+    }
+
+    .app-form-control {
+      width: 100%;
+      padding: 10px 0;
+      background: none;
+      border: none;
+      border-bottom: 1px solid #666;
+      color: #ddd;
+      font-size: 14px;
+      text-transform: uppercase;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .app-form-control::placeholder {
+      color: #666;
+    }
+
+    .app-form-control:focus {
+      border-bottom-color: #ddd;
+    }
+
+    .app-form-button {
+      background: none;
+      border: none;
+      color: #ea1d6f;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .app-form-button:hover {
+      color: #b9134f;
+    }
+
+    .credits {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      color: #ffa4bd;
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: normal;
+    }
+
+    .credits-link {
+      display: flex;
+      align-items: center;
+      color: #fff;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .dribbble {
+      width: 20px;
+      height: 20px;
+      margin: 0 5px;
+    }
+
+    @media screen and (max-width: 520px) {
+      .screen-body {
+        flex-direction: column;
+      }
+
+      .screen-body-item.left {
+        margin-bottom: 30px;
+      }
+
+      .app-title {
+        flex-direction: row;
+      }
+
+      .app-title span {
+        margin-right: 12px;
+      }
+
+      .app-title:after {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .screen-body {
+        padding: 40px;
+      }
+
+      .screen-body-item {
+        padding: 0;
+      }
+    }
+
+
+    /* Added styles for loading gif and reception address */
+
+    #error {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #success {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #qrCodeContainer {
+      margin-top: 20px;
+      border-radius: 15px;
+    }
+
+    #receptionAddress {
+      display: none;
+      border-left: 30px;
+      margin-bottom: 20px;
+    }
+
+    #receptionAddress input.app-form-control {
+      padding-right: 20px; /* Ajoute une marge interne à droite */
+      margin-right: 20px; /* Ajoute une marge externe à droite */
+    }
+
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="container">
+      <div class="screen">
+        <div class="screen-header">
+          <div class="screen-header-left">
+            <div class="screen-header-button close"></div>
+            <div class="screen-header-button maximize"></div>
+            <div class="screen-header-button minimize"></div>
+          </div>
+          <a href="https://github.com/MyEcoria/MyEcoria/blob/main/tornano/informations.md" style="padding-right: 5%; color: black;" ><div id="infoDiv">Informations</div></a>
+          <div class="screen-header-right">
+            <div class="screen-header-ellipsis"></div>
+            <div class="screen-header-ellipsis"></div>
+            <div class="screen-header-ellipsis"></div>
+          </div>
+        </div>
+        <div class="screen-body" id="allBody">
+          <div class="screen-body-item left">
+            <div class="app-title">
+              <span>Tornado</span>
+              <span>Nano Ӿ</span>
+            </div>
+            <div class="app-contact">CONTACT INFO : <a href="mailto:contact@myecoria.com">contact@myecoria.com</a></div>
+          </div>
+          <div class="screen-body-item">
+            <div class="app-form">
+              <form id="tornanoForm" class="app-form">
+                <div class="app-form-group">
+                  <input type="text" class="app-form-control" placeholder="nano_1..." id="toAddress" required>
+                </div>
+                <div class="app-form-group">
+                  <input type="number" class="app-form-control" placeholder="Number of cycles" id="cycles" required>
+                </div>
+                <div class="app-form-group">
+                  <input type="number" class="app-form-control" placeholder="Number of wait cycles" id="decalage" required>
+                </div>
+                <div class="app-form-group buttons">
+                  <button type="submit" class="app-form-button">Send 🚀</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div id="error">
+            <div class="app-form">
+              <img src="error.gif" alt="Loading...">
+            </div>
+          </div>
+        
+          <div id="success" style="display: none;">
+            <div class="app-form">
+              <img src="success.gif" alt="Loading...">
+            </div>
+          </div>
+        
+          <div id="receptionAddress" style="display: none; border-left: 30px; margin-bottom: 20px;">
+            <div class="app-form-group">
+              <input type="text" class="app-form-control" id="address" readonly>
+              <button type="button" class="app-form-button" id="copyButton">Copier</button>
+            </div>
+            <div id="qrCodeContainer"></div>
+            <div id="statusMessage"></div>
+          </div>
+          
+        
+          <div id="loading">
+            <img src="XOsX.gif" alt="Loading...">
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <script>
+    // Function to generate QR code
+    function generateQRCode(data) {
+      const qrCodeContainer = document.getElementById('qrCodeContainer');
+      qrCodeContainer.innerHTML = ''; // Clear previous QR code (if any)
+
+      const qrCode = new QRCode(qrCodeContainer, {
+        text: data,
+        width: 128,
+        height: 128,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    // Copy address to clipboard
+    document.getElementById('receptionAddress').addEventListener('click', function(event) {
+      if (event.target.id === 'copyButton') {
+        const addressInput = document.getElementById('address');
+        addressInput.select();
+        document.execCommand('copy');
+      }
+    });
+
+    // JavaScript code for handling form submission
+    document.getElementById('tornanoForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+
+      // Hide form and display loading gif
+      document.getElementById('tornanoForm').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+
+      // Get form values
+      const toAddress = document.getElementById('toAddress').value;
+      const cycles = document.getElementById('cycles').value;
+      const decalage = document.getElementById('decalage').value;
+
+      // Create request payload
+      const payload = {
+        to: toAddress,
+        cycles: parseInt(cycles),
+        decalage: parseInt(decalage)
+      };
+
+      // Send POST request to the Tornano API endpoint
+      fetch('/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+            // Display success message and hide reception address
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        } else {
+          // Hide form and display loading gif for at least 5 seconds
+          setTimeout(() => {
+            document.getElementById('tornanoForm').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+          }, 5000);
+
+          if (data.deposit) {
+            // Hide loading gif and display reception address
+            setTimeout(() => {
+              document.getElementById('loading').style.display = 'none';
+              document.getElementById('address').value = data.deposit;
+              generateQRCode(data.deposit);
+              document.getElementById('receptionAddress').style.display = 'block';
+
+              // Start checking user status every 5 seconds
+              setInterval(() => checkUserStatus(data.deposit), 5000);
+            }, 5000);
+          } 
+        }
+      });
+    });
+
+    // Function to check user status
+    function checkUserStatus(user) {
+      // Send GET request to the Tornano API endpoint
+      fetch(`/users/${user}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status == "true") {
+          // Display success message and hide reception address
+          document.getElementById('receptionAddress').style.display = 'none';
+          document.getElementById('success').style.display = 'block';
+          document.getElementById('status').style.display = 'none';
+        } else {
+          // Display pending message
+          document.getElementById('statusMessage').textContent = 'Dépôt en attente...';
+        }
+      });
+    }
+  </script>
+  
+</body>
+</html>
