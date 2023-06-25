@@ -36,7 +36,7 @@ async function receive() {
     let hashesReceive = await wallet.receiveAll(general['principalAccount']);
     console.log(hashesReceive);
   } catch (error) {
-    console.error('Une erreur s\'est produite:', error);
+    console.error('Une erreur s est produite:', error);
   }
 }
 
