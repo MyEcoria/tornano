@@ -216,39 +216,63 @@
       margin: 0 5px;
     }
   
-    @media screen and (max-width: 520px) {
+    
+
+    @media only screen and (orientation: portrait) {
+      /* Styles spécifiques aux téléphones */
+      .container {
+        flex: 0 1 90%; /* Réduire la largeur de la container */
+      }
+
+      .screen {
+        height: 20%; /* Augmenter la hauteur de l'écran */
+      }
+
       .screen-body {
-        flex-direction: column;
+        flex-direction: column; /* Réorganiser les éléments en colonne */
+        padding: 30px; /* Réduire le padding */
       }
-  
-      .screen-body-item.left {
-        margin-bottom: 30px;
+
+      .screen-body-item {
+        padding: 20px; /* Réduire le padding des éléments */
       }
-  
+
+      .app-form-group.buttons {
+        text-align: center; /* Centrer les boutons */
+      }
+
+      /* Augmenter la taille des textes */
+      body, button, input {
+        font-size: 16px;
+      }
+
+      /* Augmenter la taille des boutons */
+      .app-form-button {
+        font-size: 30px;
+      }
+
+      /* Augmenter la taille des inputs */
+      .app-form-control {
+        font-size: 30px;
+        padding: 15px 10px; /* Modifiez les valeurs de padding selon vos préférences */
+      }
+
       .app-title {
-        flex-direction: row;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap; /* Empêche le retour à la ligne */
+        position: relative;
+        color: #ea1d6f;
+        font-size: 60px;
       }
-  
+
       .app-title span {
         margin-right: 12px;
+        white-space: nowrap; /* Empêche le retour à la ligne */
       }
-  
-      .app-title:after {
-        display: none;
-      }
-    }
-  
-    @media screen and (max-width: 600px) {
-      .screen-body {
-        padding: 40px;
-      }
-  
-      .screen-body-item {
-        padding: 0;
-      }
-  
-      .container {
-        flex: 0 1 100%;
+
+      .app-contact {
+        font-size: 15px;
       }
     }
   
@@ -334,6 +358,7 @@
               <span>Tornado</span>
               <span>Nano Ӿ</span>
             </div>
+          </br>
             <div class="app-contact">CONTACT INFO : <a href="mailto:contact@myecoria.com">contact@myecoria.com</a></div>
           </div>
           <div class="screen-body-item">
