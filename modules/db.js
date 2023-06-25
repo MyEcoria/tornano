@@ -88,9 +88,7 @@ const Account = mongoose.model('Account', accountSchema);
 // Connexion à la base de données MongoDB
 mongoose.connect(dbURL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 60000,
-  wtimeout: 60000
+  useUnifiedTopology: true
 })
   .then(() => {
     const dbName = new URL(dbURL).pathname.substr(1);
