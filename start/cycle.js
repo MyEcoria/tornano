@@ -1,3 +1,4 @@
+const schedule = require('node-schedule');
 const {
   getCurrentCycle,
   getAllTransaction,
@@ -24,5 +25,5 @@ function runCode() {
     });
 }
 
-// Planifier l'exécution du code toutes les 24 heures (à 13h00)
-setInterval(runCode, 24 * 60 * 60 * 1000);
+// Planifier l'exécution du code tous les jours à 13h00
+const job = schedule.scheduleJob('0 13 * * *', runCode);
