@@ -8,22 +8,23 @@ let key = nanswap['apiKey']; // Ta clé API Nanswap Nodes, https://nanswap.com/n
 
 let ticker = "XNO";
 let headerAuth = { // En-tête personnalisé pour l'authentification
-    "nodes-api-key": key
+  "nodes-api-key": key
 };
 
 async function receive() {
+  try {
     let seed = general['principalSeed']; // save & backup it somewhere!
     // initialize wallet
     const wallet = new Wallet({
-        RPC_URL: `https://nodes.nanswap.com/${ticker}`,
-        WORK_URL: `https://nodes.nanswap.com/${ticker}`,
-        WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
-        seed: seed,
-        customHeaders: headerAuth,
-        prefix: 'nano_',
-        decimal: 30,
-        wsSubAll: false,
-        defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+      RPC_URL: `https://nodes.nanswap.com/${ticker}`,
+      WORK_URL: `https://nodes.nanswap.com/${ticker}`,
+      WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
+      seed: seed,
+      customHeaders: headerAuth,
+      prefix: 'nano_',
+      decimal: 30,
+      wsSubAll: false,
+      defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
     });
 
     // Generate 10 derived accounts
@@ -34,6 +35,9 @@ async function receive() {
     // receive all receivable blocks for an account
     let hashesReceive = await wallet.receiveAll(general['principalAccount']);
     console.log(hashesReceive);
+  } catch (error) {
+    console.error('Une erreur s\'est produite:', error);
+  }
 }
 
 // Exécuter la fonction receive() immédiatement

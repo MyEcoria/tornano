@@ -1,6 +1,7 @@
 const { Wallet } = require('simple-nano-wallet-js');
 const { wallet: walletLib } = require('multi-nano-web');
 const WebSocket = require('ws');
+const cliProgress = require('cli-progress');
 
 // import config
 const nanswap = require('../config/nanswap.json');
@@ -11,20 +12,17 @@ function sleep(ms) {
 }
 
 async function analyse(seed, timeout) {
-  return new Promise((resolve, reject) => {
-    console.log(seed);
-
-    let key = nanswap['apiKey']; // Ta clé API Nanswap Nodes, https://nanswap.com/nodes
-
-    let ticker = "XNO";
-    let headerAuth = { // En-tête personnalisé pour l'authentification
-      "nodes-api-key": key
+  return new Promise(async (resolve, reject) => {
+    const apiKey = nanswap['apiKey'];
+    const ticker = "XNO";
+    const headerAuth = {
+      "nodes-api-key": apiKey
     };
 
     const wallet = new Wallet({
       RPC_URL: `https://nodes.nanswap.com/${ticker}`,
       WORK_URL: `https://nodes.nanswap.com/${ticker}`,
-      WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
+      WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${apiKey}`,
       seed: seed,
       customHeaders: headerAuth,
       prefix: 'nano_',
@@ -34,23 +32,19 @@ async function analyse(seed, timeout) {
     });
 
     let accounts = wallet.createAccounts(0);
-    console.log(accounts);
-
-    const ws = new WebSocket(`wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`);
-
-    let timeoutId;
-
-    function handleTimeout() {
-      console.log(`Temps d'attente maximum atteint (${timeout} ms)`);
-      ws.close();
-      reject({ status: "error" });
-    }
+    const ws = new WebSocket(`wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${apiKey}`);
 
     ws.on('open', () => {
-      console.log('WebSocket connection established');
-      timeoutId = setTimeout(handleTimeout, timeout);
-      console.log(accounts[0]);
-      // Envoyer la demande de suivi pour le compte spécifié
+      const progressBar = new cliProgress.SingleBar({
+        format: 'Progress |{bar}| {percentage}% | ETA: {eta_formatted} | {value}/{total}',
+        barCompleteChar: '\u2588',
+        barIncompleteChar: '\u2591',
+        hideCursor: true
+      });
+
+      console.log(`[Analyse: ${accounts[0]}]`);
+      progressBar.start(100, 0);
+
       const subscribeMsg = JSON.stringify({
         action: 'subscribe',
         topic: 'confirmation',
@@ -63,38 +57,66 @@ async function analyse(seed, timeout) {
 
     ws.on('message', async (data) => {
       const message = JSON.parse(data);
-      console.log(message);
       if (message.topic === 'confirmation' && message.message.block.subtype === "send") {
-        clearTimeout(timeoutId);
         const account = message.message.account;
         const amount = message.message.amount;
-        console.log(`Nouvelle transaction reçue sur le compte ${account}: ${amount} Nano`);
 
-        // Fonction pour envoyer une transaction
+        const progressBar = new cliProgress.SingleBar({
+          format: 'Progress |{bar}| {percentage}% | ETA: {eta_formatted} | {value}/{total}',
+          barCompleteChar: '\u2588',
+          barIncompleteChar: '\u2591',
+          hideCursor: true
+        });
+
         async function send(source, amount) {
-          await sleep(1000); // Pause d'une seconde (1000 millisecondes)
-          let hash = await wallet.send({
-            source: source,
-            destination: general['principalAccount'],
-            amount: amount,
-          });
-          console.log(hash);
+          let progress = 0;
+          progressBar.start(100, progress);
+
+          while (progress < 100) {
+            await sleep(100);
+            progress += 10;
+            progressBar.update(progress);
+          }
+
+          let hash;
+          try {
+            hash = await wallet.send({
+              source: source,
+              destination: general['principalAccount'],
+              amount: amount,
+            });
+          } catch (error) {
+            progressBar.stop();
+            reject({ status: "error", error: error });
+            return;
+          }
+
+          progressBar.stop();
+          resolve({ status: "ok", data: amount });
         }
 
-        await send(accounts[0], amount);
-        ws.close();
-        resolve({ status: "ok", data: amount });
-
-        // Effectuez d'autres actions avec la transaction, par exemple déclencher une action ou envoyer une notification
+        try {
+          await send(accounts[0], amount);
+          ws.close();
+        } catch (error) {
+          ws.close();
+          reject({ status: "error", error: error });
+        }
       }
     });
 
     ws.on('error', (error) => {
-      clearTimeout(timeoutId);
-      console.error('WebSocket error:', error);
-      ws.close();
-      reject({ status: "error" });
+      reject({ status: "error", error: error });
     });
+
+    ws.on('close', () => {
+      reject({ status: "error", error: "WebSocket connection closed" });
+    });
+
+    setTimeout(() => {
+      ws.close();
+      reject({ status: "error", error: "Temps d'attente maximum atteint" });
+    }, timeout);
   });
 }
 

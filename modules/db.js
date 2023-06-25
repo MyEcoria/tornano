@@ -127,7 +127,6 @@ async function saveTransaction(to, amount, cycle) {
     });
 
     await transaction.save();
-    console.log('Transaction enregistrée avec succès.');
   } catch (error) {
     console.error('Erreur lors de l\'enregistrement de la transaction:', error);
   }
@@ -199,7 +198,6 @@ async function createAccount(address) {
 async function changeAccountStatus(address) {
   try {
     await Account.updateOne({ address }, { status: true });
-    console.log('Statut du compte mis à jour avec succès.');
   } catch (error) {
     console.error('Erreur lors de la mise à jour du statut du compte:', error);
   }

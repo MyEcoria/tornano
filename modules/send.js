@@ -36,14 +36,12 @@ async function send(to, amount) {
           return;
         }
         let accounts = wallet.createAccounts(0);
-        // Envoyer 0.001 nano depuis general['principalAccount'] vers to
         let hash = await wallet.send({
           source: accounts[0],
           destination: to,
           amount: amountNumber,
         });
         return(hash);
-        // Suite du code...
 }
 
 module.exports = { send };
