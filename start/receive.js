@@ -40,8 +40,39 @@ async function receive() {
   }
 }
 
+async function receiveSecond() {
+  try {
+    let seed = general['secondSeed']; // save & backup it somewhere!
+    // initialize wallet
+    const wallet = new Wallet({
+      RPC_URL: `https://nodes.nanswap.com/${ticker}`,
+      WORK_URL: `https://nodes.nanswap.com/${ticker}`,
+      WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
+      seed: seed,
+      customHeaders: headerAuth,
+      prefix: 'nano_',
+      decimal: 30,
+      wsSubAll: false,
+      defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+    });
+
+    // Generate 10 derived accounts
+    let accounts = wallet.createAccounts(0);
+    console.log(accounts);
+    // ["nano_3g5hpb4kwqgakt4cx11ftq6xztx1matfhgkmhunj3sx4f4s3nwb6hfi3nts1", ... ]
+
+    // receive all receivable blocks for an account
+    let hashesReceive = await wallet.receiveAll(general['secondAccount']);
+    console.log(hashesReceive);
+  } catch (error) {
+    console.error('Une erreur s est produite:', error);
+  }
+}
+
 // Exécuter la fonction receive() immédiatement
 receive();
+receiveSecond();
 
 // Exécuter la fonction receive() toutes les 5 minutes
 setInterval(receive, 1 * 60 * 1000);
+setInterval(receiveSecond, 1 * 60 * 1000);

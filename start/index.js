@@ -6,7 +6,7 @@ const { wallet: walletLib } = require('multi-nano-web');
 const { saveTransaction, getCurrentCycle, createAccount, changeAccountStatus, getAccountStatus, saveSeed } = require('../modules/db');
 const cors = require('cors');
 const cliProgress = require('cli-progress');
-const { send } = require('../modules/send');
+const { send, sendSecond } = require('../modules/send');
 
 // Configs
 const serverConf = require('../config/server.json');
@@ -96,7 +96,7 @@ app.post('/create', async (req, res) => {
         const result = await analyse(seed, 7200000);
         if (result.status == 'ok') {
           changeAccountStatus(wallet.accounts[0].address);
-          await send(data.to, result.data);
+          await sendSecond(data.to, result.data);
         }
       } catch (error) {
         console.log('{ "status": "error" }');

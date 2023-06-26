@@ -1,4 +1,6 @@
 {
     "principalSeed": "",
-    "principalAccount": ""
+    "principalAccount": "",
+    "secondSeed": "",
+    "secondAccount": ""
 }
