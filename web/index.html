@@ -336,6 +336,27 @@
       padding-right: 35%;
     }
 
+    select {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #fff;
+      color: #333;
+      font-size: 14px;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    select:hover {
+      cursor: pointer;
+      background-color: #f5f5f5;
+    }
+
+    select:focus {
+      box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    }
+
+
   </style>
   
 </head>
@@ -367,23 +388,44 @@
             <div class="app-contact">CONTACT INFO : <a href="mailto:contact@myecoria.com">contact@myecoria.com</a></div>
           </div>
           <div class="screen-body-item">
-            <div class="app-form">
-              <form id="tornanoForm" class="app-form">
-                <div class="app-form-group">
-                  <input type="text" class="app-form-control" placeholder="nano_1..." id="toAddress" required>
-                </div>
-                <div class="app-form-group">
-                  <input type="number" class="app-form-control" placeholder="Number of cycles" id="cycles" required>
-                </div>
-                <div class="app-form-group">
-                  <input type="number" class="app-form-control" placeholder="Number of wait cycles" id="decalage" required>
-                </div>
-                <div class="app-form-group buttons">
-                  <button type="submit" class="app-form-button">Send 🚀</button>
-                </div>
-              </form>
+            <div class="app-form" id="allForm">
+              <div class="app-form-group">
+                <select id="selectType" onchange="showForm()">
+                  <option value="instant" selected>Type 🌪️</option>
+                  <option value="instant">Instant 🚀</option>
+                  <option value="cycle">By Cycle 🛒</option>
+                </select>
+              </div>
+              <div id="cycleForm" style="display: none;">
+                <form id="cycleTornanoForm" class="app-form">
+                  <div class="app-form-group">
+                    <input type="text" class="app-form-control" placeholder="nano_1..." id="toAddressCycle" required>
+                  </div>
+                  <div class="app-form-group">
+                    <input type="number" class="app-form-control" placeholder="Number of cycles" id="cycles" required>
+                  </div>
+                  <div class="app-form-group">
+                    <input type="number" class="app-form-control" placeholder="Number of wait cycles" id="decalage" required>
+                  </div>
+                  <div class="app-form-group buttons">
+                    <button type="submit" class="app-form-button">Send 🚀</button>
+                  </div>
+                </form>
+              </div>
+          
+              <div id="instantForm" style="display: none;">
+                <form id="instantTornanoForm" class="app-form">
+                  <div class="app-form-group">
+                    <input type="text" class="app-form-control" placeholder="nano_1..." id="toAddressInstant" required>
+                  </div>
+                  <div class="app-form-group buttons">
+                    <button type="submit" class="app-form-button">Send 🚀</button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
+          
           <div id="error">
             <div class="app-form">
               <img src="assets/error.gif" alt="Loading...">
@@ -417,15 +459,18 @@
 
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <script>
+    var cycleForm = document.getElementById('cycleTornanoForm');
+    var instantForm = document.getElementById('instantTornanoForm');
+
     // Function to generate QR code
     function generateQRCode(data) {
       const qrCodeContainer = document.getElementById('qrCodeContainer');
       qrCodeContainer.innerHTML = ''; // Clear previous QR code (if any)
 
       const qrCode = new QRCode(qrCodeContainer, {
-        text: data,
-        width: 128,
-        height: 128,
+        text: `nano:` + data,
+        width: 200,
+        height: 200,
         colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
@@ -442,25 +487,36 @@
     });
 
     // JavaScript code for handling form submission
-    document.getElementById('tornanoForm').addEventListener('submit', function(event) {
+    function handleFormSubmission(event) {
       event.preventDefault(); // Prevent form submission
 
       // Hide form and display loading gif
-      document.getElementById('tornanoForm').style.display = 'none';
+      document.getElementById('allForm').style.display = 'none';
       document.getElementById('loading').style.display = 'block';
 
+      let payload;
       // Get form values
-      const toAddress = document.getElementById('toAddress').value;
-      const cycles = document.getElementById('cycles').value;
-      const decalage = document.getElementById('decalage').value;
-
-      // Create request payload
-      const payload = {
-        to: toAddress,
-        cycles: parseInt(cycles),
-        decalage: parseInt(decalage)
-      };
-
+      const type = document.getElementById("selectType").value;
+      if (type == "cycle") {
+        const toAddress = document.getElementById('toAddressCycle').value;
+        const cycles = document.getElementById('cycles').value;
+        const decalage = document.getElementById('decalage').value;
+        // Create request payload
+        payload = {
+          type: 1,
+          to: toAddress,
+          cycles: parseInt(cycles),
+          decalage: parseInt(decalage)
+        };
+      } else if (type == "instant") {
+        const toAddress = document.getElementById('toAddressInstant').value;
+        // Create request payload
+        payload = {
+          type: 2,
+          to: toAddress
+        };
+      }
+      
       // Send POST request to the Tornano API endpoint
       fetch('/create', {
         method: 'POST',
@@ -478,7 +534,7 @@
         } else {
           // Hide form and display loading gif for at least 5 seconds
           setTimeout(() => {
-            document.getElementById('tornanoForm').style.display = 'none';
+            document.getElementById('allForm').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
           }, 5000);
 
@@ -496,7 +552,11 @@
           } 
         }
       });
-    });
+    }
+
+    // Add event listener for form submission on both forms
+    cycleForm.addEventListener('submit', handleFormSubmission);
+    instantForm.addEventListener('submit', handleFormSubmission);
 
     // Function to check user status
     function checkUserStatus(user) {
@@ -515,6 +575,21 @@
         }
       });
     }
+
+    function showForm() {
+      var select = document.getElementById("selectType");
+      var instantForm = document.getElementById("instantForm");
+      var cycleForm = document.getElementById("cycleForm");
+
+      if (select.value === "instant") {
+        instantForm.style.display = "block";
+        cycleForm.style.display = "none";
+      } else if (select.value === "cycle") {
+        instantForm.style.display = "none";
+        cycleForm.style.display = "block";
+      }
+    }
+
   </script>
   
 </body>
