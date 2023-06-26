@@ -7,15 +7,24 @@ const { saveTransaction, getCurrentCycle, createAccount, changeAccountStatus, ge
 const cors = require('cors');
 const cliProgress = require('cli-progress');
 const { send, sendSecond } = require('../modules/send');
+const rateLimit = require('express-rate-limit');
 
 // Configs
 const serverConf = require('../config/server.json');
 const port = serverConf['httPort'];
 
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 300, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
 // Définir le middleware pour servir les fichiers statiques
 app.use(express.static('web'));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(limiter);
 
 function isNanoAddress(address) {
   // Expression régulière pour valider le format de l'adresse Nano
@@ -105,8 +114,6 @@ app.post('/create', async (req, res) => {
   }
 });
 
-
-
 app.get('/users/:userId', async (req, res) => {
   const userId = req.params.userId;
 
@@ -131,7 +138,6 @@ app.get('/users/:userId', async (req, res) => {
 app.get('/', (req, res) => {
   res.sendFile('index.html', { root: __dirname + '/web' });
 });
-
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Serveur démarré sur le port ${port}`);
