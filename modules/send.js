@@ -71,8 +71,38 @@ async function sendSecond(to, amount) {
   return(hash);
 }
 
+async function sendFaucet(to, amount) {
+  const wallet = new Wallet({
+    RPC_URL: `https://nodes.nanswap.com/${ticker}`,
+    WORK_URL: `https://nodes.nanswap.com/${ticker}`,
+    WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
+    seed: general['faucetSeed'],
+    customHeaders: headerAuth,
+    prefix: 'nano_',
+    decimal: 30,
+    wsSubAll: false,
+    defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+  });
+  // Convertir l'amount en nombre
+  const amountNumber = parseFloat(amount);
+
+  // Vérifier si amountNumber est un nombre valide
+  if (isNaN(amountNumber)) {
+    console.error('Le montant spécifié n\'est pas un nombre valide.');
+    return;
+  }
+  let accounts = wallet.createAccounts(0);
+  let hash = await wallet.send({
+    source: accounts[0],
+    destination: to,
+    amount: wallet.megaToRaw(amountNumber),
+  });
+  return(hash);
+}
+
 module.exports = { 
   send,
-  sendSecond
+  sendSecond,
+  sendFaucet
 };
       

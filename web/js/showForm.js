@@ -12,5 +12,8 @@ function showForm() {
     } else if (select.value === "select") {
       instantForm.style.display = "none";
       cycleForm.style.display = "none";
+    } else if (select.value === "faucet") {
+      instantForm.style.display = "block";
+      cycleForm.style.display = "none";
     }
 }

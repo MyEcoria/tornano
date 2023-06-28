@@ -6,7 +6,7 @@ const { wallet: walletLib } = require('multi-nano-web');
 const { saveTransaction, getCurrentCycle, createAccount, changeAccountStatus, getAccountStatus, saveSeed } = require('../modules/db');
 const cors = require('cors');
 const cliProgress = require('cli-progress');
-const { send, sendSecond } = require('../modules/send');
+const { send, sendSecond, sendFaucet } = require('../modules/send');
 const rateLimit = require('express-rate-limit');
 
 // Configs
@@ -20,11 +20,17 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
+const faucetLimiter = rateLimit({
+	windowMs: 24 * 60 * 60 * 1000, // 15 minutes
+	max: 2, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
 // Définir le middleware pour servir les fichiers statiques
 app.use(express.static('web'));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(limiter);
 
 function isNanoAddress(address) {
   // Expression régulière pour valider le format de l'adresse Nano
@@ -36,7 +42,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-app.post('/create', async (req, res) => {
+app.post('/create', limiter, async (req, res) => {
   const data = req.body;
 
   if (data.type == 1){
@@ -112,6 +118,26 @@ app.post('/create', async (req, res) => {
       }
     }
   }
+});
+
+app.get('/faucet/:userId', faucetLimiter, async (req, res) => {
+  const userId = req.params.userId;
+  console.log(userId);
+
+  if (userId) {
+      // Vérifier si userId est une adresse Nano valide
+      const isValidAddress = await isNanoAddress(userId);
+
+      if (isValidAddress) {
+        const faucet = await sendFaucet(userId, '0.000001');
+        console.log(faucet);
+        res.send('{"status": "ok"}')
+      } else {
+        // L'adresse n'est pas valide, renvoyer une erreur ou une autre réponse appropriée
+        res.status(400).send('Adresse Nano invalide');
+      }
+    }
+  
 });
 
 app.get('/users/:userId', async (req, res) => {
