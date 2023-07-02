@@ -37,6 +37,14 @@ export default function App() {
       <NavBarre></NavBarre>
         <Grid.Container gap={2}>
         <Collapse.Group splitted style={{width: "100%"}}>
+            <Grid>
+                <Collapse
+                  shadow
+                  title="General explanations"
+                  subtitle="More general explanations"
+                >
+                </Collapse>
+              </Grid>
               <Collapse title="What is Tornano's goal?">
                 <Text>
                 The main goal of this program is to protect users' privacy by masking the links between the sending and receiving addresses of Nano transactions. It implements various anonymization techniques to make transactions harder to trace and associate with specific identities.
@@ -72,6 +80,43 @@ export default function App() {
                 <Text>
                 I am the developer of this app, MyEcoria and you can donate to me at this address:
                 <a href="https://www.nanolooker.com/account/nano_3ktmq6dpwcc694hrnjzfdykbqeuj4w5w8nut3uqm5pgwa4m9jmstoc4ntu6p">nano_3ktmq6dpwcc694hrnjzfdykbqeuj4w5w8nut3uqm5pgwa4m9jmstoc4ntu6p</a>
+                </Text>
+              </Collapse>
+            </Collapse.Group>
+          <Grid>
+            
+          </Grid>
+        </Grid.Container>
+
+        <Grid.Container gap={2}>
+        <Collapse.Group splitted style={{width: "100%"}}>
+            <Grid>
+                <Collapse
+                  shadow
+                  title="Services"
+                  subtitle="More information about services"
+                >
+                  <Text>
+                    Explanations and examples of each type of tornano transaction 😉
+                  </Text>
+                </Collapse>
+              </Grid>
+              <Collapse title="By Cycle">
+                <Text>
+                The "By cycle" service makes it possible to truly anonymize transactions over time. To use this service, you have a form, "to", "Number of cycles", "wait cycles".
+                <br/>"To" means the transaction receiving address
+                <br/>"Number of cycles" means the number of cycles, one cycle = one day, for example if you choose 3 your deposit will be divided by 3 minus a random percentage then every day, a part will be sent with all the other transactions
+                <br/>"wait cycles" means, the number of wait cycles before starting to send transactions, for example if you choose 3 wait cycles, you will start receiving nano after 3 days.
+                </Text>
+              </Collapse>
+              <Collapse title="Instant">
+                <Text>
+                The "instant" service does not make transactions anonymous, just cut the direct link between your wallet and the reception address, for example by sending 1 nano, 1 nano will be sent directly to you with one of our wallets to the chosen reception address, there is no charge for this service and it is instantaneous.
+                </Text>
+              </Collapse>
+              <Collapse title="Who developed the app?">
+                <Text>
+                The faucet just allows you to test the crypto nano, there is a rate limit and even if you spam it, you won't get rich 😂
                 </Text>
               </Collapse>
             </Collapse.Group>
