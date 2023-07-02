@@ -2,7 +2,6 @@ import { Button, Text, Container, Input, Image, Card, createTheme, NextUIProvide
 import { NavBarre } from "./utils/navbar";
 import './css/select.css'
 
-
 const theme = createTheme({
   type: "dark", // it could be "light" or "dark"
   theme: {
@@ -161,6 +160,13 @@ function checkUserStatus(user) {
     });
 }
 
+function copyAdd() {
+  const addressInput = document.getElementById('address');
+  addressInput.select();
+  document.execCommand('copy');
+}
+
+
 export default function App() {
   return (
     <NextUIProvider theme={theme}>
@@ -298,6 +304,7 @@ export default function App() {
                   <Text>Sucess</Text>
                 </Card.Header>
                 <Card.Divider />
+                <br/>
                 <div class="app-form-group">
                   <Input
                     rounded
@@ -308,8 +315,10 @@ export default function App() {
                     required
                     readOnly
                   />
-                  <button type="button" class="app-form-button" id="copyButton">Copier</button>
+
+                  <button type="button" class="app-form-button" id="copyButton" onClick={copyAdd}>Copier</button>
                 </div>
+                <br/>
                 <Image id="srCode" src="" alt="deposit"/>
                 <div id="statusMessage"></div>
               </Card.Body>

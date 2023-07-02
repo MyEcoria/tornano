@@ -31,7 +31,7 @@
     "multi-nano-web": "^1.4.42",
     "node-cron": "^3.0.2",
     "node-schedule": "^2.1.1",
-    "simple-nano-wallet-js": "^0.1.4",
-    "ws": "^7.0.0"
+    "simple-nano-wallet-js": "^0.1.5",
+    "ws": "^7.5.9"
   }
 }
