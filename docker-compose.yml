@@ -2,13 +2,13 @@ version: '3'
 
 services:
   tornano-back:
-    image: tornano-back
+    image: tornano:backend
     ports:
       - 3001:3001
     restart: always
 
   tornano-front:
-    image: tornano-front
+    image: tornano:frontend
     ports:
       - 3000:3000
     restart: always
