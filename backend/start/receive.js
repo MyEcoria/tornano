@@ -104,6 +104,6 @@ receiveSecond();
 receiveFaucet();
 
 // Exécuter la fonction receive() toutes les 5 minutes
-setInterval(receive, 1 * 60 * 1000);
-setInterval(receiveSecond, 1 * 60 * 1000);
-setInterval(receiveFaucet, 1 * 60 * 1000);
+setInterval(receive, 5 * 60 * 1000);
+setInterval(receiveSecond, 5 * 60 * 1000);
+setInterval(receiveFaucet, 5 * 60 * 1000);
