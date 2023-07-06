@@ -12,19 +12,24 @@ let ticker = "XNO";
 let headerAuth = { // En-tête personnalisé pour l'authentification
     "nodes-api-key": key
 };
-
+let baseConfig = {
+      RPC_URL: `https://nodes.nanswap.com/${ticker}`,
+      WORK_URL: `https://nodes.nanswap.com/${ticker}`,
+      WS_URL: undefined,
+      customHeaders: headerAuth,
+      prefix: 'nano_',
+      decimal: 30,
+      wsSubAll: false,
+      defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+    }
+const wallets = {
+  "principalSeed": new Wallet(Object.assign({}, baseConfig, {seed: general['principalSeed']})), // add the custom seed to conf object
+  "secondSeed": new Wallet(Object.assign({}, baseConfig, {seed: general['secondSeed']})), 
+  "faucetSeed": new Wallet(Object.assign({}, baseConfig, {seed: general['faucetSeed']}))
+  
+}  
 async function send(to, amount) {
-        const wallet = new Wallet({
-          RPC_URL: `https://nodes.nanswap.com/${ticker}`,
-          WORK_URL: `https://nodes.nanswap.com/${ticker}`,
-          WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
-          seed: general['principalSeed'],
-          customHeaders: headerAuth,
-          prefix: 'nano_',
-          decimal: 30,
-          wsSubAll: false,
-          defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
-        });
+        let wallet = wallets['principalSeed']
         // Convertir l'amount en nombre
         const amountNumber = parseFloat(amount);
       
@@ -43,17 +48,7 @@ async function send(to, amount) {
 }
 
 async function sendSecond(to, amount) {
-  const wallet = new Wallet({
-    RPC_URL: `https://nodes.nanswap.com/${ticker}`,
-    WORK_URL: `https://nodes.nanswap.com/${ticker}`,
-    WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
-    seed: general['secondSeed'],
-    customHeaders: headerAuth,
-    prefix: 'nano_',
-    decimal: 30,
-    wsSubAll: false,
-    defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
-  });
+  let wallet = wallets['secondSeed']
   // Convertir l'amount en nombre
   const amountNumber = parseFloat(amount);
 
@@ -72,17 +67,7 @@ async function sendSecond(to, amount) {
 }
 
 async function sendFaucet(to, amount) {
-  const wallet = new Wallet({
-    RPC_URL: `https://nodes.nanswap.com/${ticker}`,
-    WORK_URL: `https://nodes.nanswap.com/${ticker}`,
-    WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
-    seed: general['faucetSeed'],
-    customHeaders: headerAuth,
-    prefix: 'nano_',
-    decimal: 30,
-    wsSubAll: false,
-    defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
-  });
+  let wallet = wallets['faucetSeed']
   // Convertir l'amount en nombre
   const amountNumber = parseFloat(amount);
 
