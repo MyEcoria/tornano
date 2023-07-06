@@ -10,22 +10,29 @@ let ticker = "XNO";
 let headerAuth = { // En-tête personnalisé pour l'authentification
   "nodes-api-key": key
 };
-
-async function receive() {
-  try {
-    let seed = general['principalSeed']; // save & backup it somewhere!
-    // initialize wallet
-    const wallet = new Wallet({
+let baseConfig = {
       RPC_URL: `https://nodes.nanswap.com/${ticker}`,
       WORK_URL: `https://nodes.nanswap.com/${ticker}`,
       WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
-      seed: seed,
       customHeaders: headerAuth,
       prefix: 'nano_',
       decimal: 30,
       wsSubAll: false,
       defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
-    });
+    }
+
+const wallets = {
+  "principalSeed": new Wallet(Object.assign({}, baseConfig, {seed: general['principalSeed']})), // add the custom seed to conf object
+  "secondSeed": new Wallet(Object.assign({}, baseConfig, {seed: general['secondSeed']})), 
+  "faucetSeed": new Wallet(Object.assign({}, baseConfig, {seed: general['faucetSeed']}))
+  
+}  
+
+async function receive() {
+  try {
+    let seed = general['principalSeed']; // save & backup it somewhere!
+    // initialize wallet
+    let wallet = wallets['principalSeed]
 
     // Generate 10 derived accounts
     let accounts = wallet.createAccounts(0);
@@ -42,20 +49,8 @@ async function receive() {
 
 async function receiveSecond() {
   try {
-    let seed = general['secondSeed']; // save & backup it somewhere!
     // initialize wallet
-    const wallet = new Wallet({
-      RPC_URL: `https://nodes.nanswap.com/${ticker}`,
-      WORK_URL: `https://nodes.nanswap.com/${ticker}`,
-      WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
-      seed: seed,
-      customHeaders: headerAuth,
-      prefix: 'nano_',
-      decimal: 30,
-      wsSubAll: false,
-      defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
-    });
-
+    let wallet = wallets['secondSeed]
     // Generate 10 derived accounts
     let accounts = wallet.createAccounts(0);
     console.log(accounts);
@@ -71,20 +66,7 @@ async function receiveSecond() {
 
 async function receiveFaucet() {
   try {
-    let seed = general['faucetSeed']; // save & backup it somewhere!
-    // initialize wallet
-    const wallet = new Wallet({
-      RPC_URL: `https://nodes.nanswap.com/${ticker}`,
-      WORK_URL: `https://nodes.nanswap.com/${ticker}`,
-      WS_URL: `wss://nodes.nanswap.com/ws/?ticker=${ticker}&api=${key}`,
-      seed: seed,
-      customHeaders: headerAuth,
-      prefix: 'nano_',
-      decimal: 30,
-      wsSubAll: false,
-      defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
-    });
-
+    let wallet = wallets['faucetSeed]
     // Generate 10 derived accounts
     let accounts = wallet.createAccounts(0);
     console.log(accounts);
