@@ -1,4 +1,4 @@
-const { Wallet } = require('simple-nano-wallet-js');
+const { Wallet } = require('simple-nano-wallet-js-dev');
 const { wallet: walletLib } = require('multi-nano-web');
 
 // config file
@@ -25,6 +25,7 @@ async function receive() {
       decimal: 30,
       wsSubAll: false,
       defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+      connectionTimeout: 300000,
     });
 
     // Generate 10 derived accounts
@@ -54,6 +55,7 @@ async function receiveSecond() {
       decimal: 30,
       wsSubAll: false,
       defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+      connectionTimeout: 3600000,
     });
 
     // Generate 10 derived accounts
@@ -83,6 +85,7 @@ async function receiveFaucet() {
       decimal: 30,
       wsSubAll: false,
       defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+      connectionTimeout: 7200000,
     });
 
     // Generate 10 derived accounts
@@ -105,5 +108,5 @@ receiveFaucet();
 
 // Exécuter la fonction receive() toutes les 5 minutes
 setInterval(receive, 5 * 60 * 1000);
-setInterval(receiveSecond, 5 * 60 * 1000);
-setInterval(receiveFaucet, 5 * 60 * 1000);
+setInterval(receiveSecond, 60 * 60 * 1000);
+setInterval(receiveFaucet, 120 * 60 * 1000);

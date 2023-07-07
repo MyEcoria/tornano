@@ -24,6 +24,7 @@ async function send(to, amount) {
           decimal: 30,
           wsSubAll: false,
           defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+          connectionTimeout: 300000,
         });
         // Convertir l'amount en nombre
         const amountNumber = parseFloat(amount);

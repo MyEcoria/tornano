@@ -1,4 +1,4 @@
-const { Wallet } = require('simple-nano-wallet-js');
+const { Wallet } = require('simple-nano-wallet-js-dev');
 const { wallet: walletLib } = require('multi-nano-web');
 const WebSocket = require('ws');
 const cliProgress = require('cli-progress');
@@ -29,6 +29,7 @@ async function analyse(seed, timeout) {
       decimal: 30,
       wsSubAll: false,
       defaultRep: "nano_1banexkcfuieufzxksfrxqf6xy8e57ry1zdtq9yn7jntzhpwu4pg4hajojmq",
+      connectionTimeout: timeout,
     });
 
     let accounts = wallet.createAccounts(0);

@@ -67,7 +67,7 @@ function handleFormSubmission(event) {
   if (type === "faucet") {
     const toAddress = document.getElementById('toAddressInstant').value;
     // Create request URL
-    const url = `https://api.tornano.cc/faucet/${toAddress}`;
+    const url = `http://localhost:3001/faucet/${toAddress}`;
 
     // Send GET request to the Tornano API endpoint
     fetch(url)
@@ -107,7 +107,7 @@ function handleFormSubmission(event) {
     }
 
     // Send POST request to the Tornano API endpoint
-    fetch('https://api.tornano.cc/create', {
+    fetch('http://localhost:3001/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -146,7 +146,7 @@ function handleFormSubmission(event) {
 // Function to check user status
 function checkUserStatus(user) {
   // Send GET request to the Tornano API endpoint
-  fetch(`https://api.tornano.cc/users/${user}`)
+  fetch(`http://localhost:3001/users/${user}`)
     .then(response => response.json())
     .then(data => {
       if (data.status === "true") {
