@@ -1,5 +1,5 @@
 # Tornado
-![Tornano](data/img/logo-removebg-preview.png)
+![Tornano](backend/data/img/tornano1-removebg-preview.png)
 
 The Nano cryptocurrency anonymization program is a system designed to enhance the privacy of transactions made with the Nano cryptocurrency. It provides a means to conceal the origin of funds and make transactions more difficult to trace.
 
